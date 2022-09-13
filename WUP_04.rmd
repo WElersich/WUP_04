@@ -25,6 +25,33 @@ $H_a$ There is a significant difference in average score on the WORDSUM test bet
 # Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method.!-->
+First, we must read the data:
+```{R}
+library(readr)
+
+rawdata <- read_csv("GSScsv.csv")
+
+rawdata
+```
+Now, we should find what each variable measures:
+
+```{R}
+dim(rawdata)
+names(rawdata)
+```
+
+As we can see, there is a lot of data that is not necessary to answer the question. Therefore, we should remove some of these columns. We should also convert character variables to factor variables.
+
+```{R}
+data <- rawdata %>%
+  select(...1, DEGREE, WORDSUM) %>%
+  mutate(across(where(is.character), as.factor)) %>%
+  arrange(desc(DEGREE))
+
+data
+```
+
+Here we have a factor (categorical) variable and a numerical variable. therefore, we should use the boxplot() and favstats() commands to visualize our results.
 
 # Results
 
@@ -35,6 +62,10 @@ $H_a$ There is a significant difference in average score on the WORDSUM test bet
 ### Graphical Descriptive Results
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+```{r}
+boxplot(WORDSUM~DEGREE, data=data)
+```
 
 ### Numerical Descriptive Results
 
