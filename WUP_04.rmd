@@ -49,9 +49,9 @@ data <- rawdata %>%
   arrange(desc(DEGREE))
 
 data
-```
+```  
 
-Here we have a factor (categorical) variable and a numerical variable. therefore, we should use the boxplot() and favstats() commands to visualize our results.
+Here we have a factor (categorical) variable, DEGREE, and a numerical variable, WORDSUM. therefore, we should use the boxplot() and favstats() commands to visualize our results, and use the one way anova, and then find the 99% confidence interval  to determine statistical difference between the education levels.
 
 # Results
 
@@ -64,18 +64,40 @@ Here we have a factor (categorical) variable and a numerical variable. therefore
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
 ```{r}
-boxplot(WORDSUM~DEGREE, data=data)
-```
+boxplot(WORDSUM~DEGREE, data=data, las = 2, pars=list(par(mar=c(10,4,2,4))), xlab = "" )
+xlab = mtext("DEGREE", side=1, line=8) 
+```  
+
+Judging by this box plot, we can see that a Lt High School level, a Graduate level, and a Bachelor level are likely statistically different from each other. Similarly, a High School level is likely statistically different from a Junior College level and a Graduate level, and a Lt high School Level is likely statistically different from a Junior College level.
 
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+```{r}
+favstats(WORDSUM~DEGREE,data=data)
+```  
+Judging from these numerical results, we can reach the same conclusions as the numerical results: a Lt High School level, a Graduate level, and a Bachelor level are likely statistically different from each other; Similarly, a High School level is likely statistically different from a Junior College level and a Graduate level, and a Lt high School Level is likely statistically different from a Junior College level.
+
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
 
+```{r}
+model1 <- aov(WORDSUM~DEGREE,data=data)
+summary.aov(model1)
+```  
+The Pr value is such a low number, 0.00236, that it is unlikely that there is not statistical difference between the education levels. 
+```{r}
+#we specify the margins starting at the bottom and proceeding clockwise - thus 8.7 is the left side margin to hold the names of the factors
+par(mar = c(3, 16, 2, 2))
+plot(TukeyHSD(model1, conf.level = .90),las=2)
+```
+
+Here we can see that all of these levels are actually not statistically different, except the High School and Lt High School levels being different from the Graduate level.
 
 # Discussion and Conclusion
+Judging from our results, $H_a$, There is a significant difference in average score on the WORDSUM test between at least two levels of DEGREE, is the correct conclusion. The Pr value shows this. In the confidence intervals, we can see that the Graduate level is very likely different from the High School and Lt High School levels.  However, it would not be unreasonable to claim that $H_0$, There is no difference between the average score on the WORDSUM test and level of schooling DEGREE, is correct since, according to the confidence intervals created, most of the Education levels are likly not statistically different from each other.
+
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
